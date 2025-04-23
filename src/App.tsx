@@ -7,6 +7,7 @@ import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Admin from "./pages/Admin";
 import Events from "./pages/Events";
+import EventsAdmin  from './pages/admin/Events'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/signup" element={<Signup />}/>
           <Route path="/events" element={<Events />}/>
           <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+          <Route path="/admin/events" element={<ProtectedRoute><EventsAdmin /></ProtectedRoute>}/>
           <Route path="*" element={<h1>NotFound</h1>} />
         </Routes>
         <ToastContainer theme="dark" />

@@ -32,9 +32,11 @@ export default function Events() {
 
   return (
     <>
-      <NavBar />
-        <section className="h-screen">
+      <NavBar relative/>
+        <section className="">
+            <div className="container flex items-center">
 
+            </div>
         </section>
       <Footer />
     </>

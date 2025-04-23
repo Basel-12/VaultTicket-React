@@ -27,7 +27,7 @@ export default function Login() {
 
   return (
     <>
-      <NavBar />
+      <NavBar relative/>
       <section className="h-[calc(100vh-10px)]">
         <div className="container flex justify-center items-center h-full">
           <motion.form
