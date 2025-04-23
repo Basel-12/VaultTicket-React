@@ -28,9 +28,9 @@ export default function EventsSection() {
   return (
     <Section header="Our Events Services">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 ">
-        {coloumns.map((col) => {
+        {coloumns.map((col, index) => {
           return (
-            <div className="col flex flex-col gap-4">
+            <div className="col flex flex-col gap-4" key={index + 1}>
               {col.map(({ name, image }) => {
                 return (
                   <>
@@ -40,6 +40,7 @@ export default function EventsSection() {
                       viewport={{once: true}}
                       transition={{duration: 1, delay: 0.5}}
                       className="rounded-md shadow-sm relative after:content-[''] after:absolute after:inset-0 after:h-full after:w-full after:bg-black after:opacity-50 after:duration-500 hover:after:opacity-0"
+                      key={name}
                     >
                       <img src={image} className="rounded-md" />
                       <p className="absolute rounded-md py-2 bg-transparent  bottom-0 left-0 w-full z-20 text-white text-lg text-center backdrop-blur-sm">{name}</p>

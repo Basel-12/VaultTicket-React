@@ -1,6 +1,10 @@
 import { Link, NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
+import useAuth from "../../hooks/useAuth";
 export default function NavBar() {
+
+  const {user} = useAuth()
+
   return (
     <motion.nav
       initial={{ y: 20, opacity: 0.1 }}
@@ -15,6 +19,7 @@ export default function NavBar() {
           <NavLink to={"/"}>Home</NavLink>
           <NavLink to={"/mybookings"}>Bookings</NavLink>
           <NavLink to={"/events"}>Events</NavLink>
+          {user?.role === 'Admin' && <NavLink to={"/admin"}>Dashboard</NavLink>}
         </ul>
         <div className="auth hidden md:flex space-x-3 items-center">
           <Link

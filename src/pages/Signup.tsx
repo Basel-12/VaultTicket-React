@@ -4,26 +4,24 @@ import Footer from "../components/Footer";
 import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { toast } from "react-toastify";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-export default function Login() {
+export default function Signup() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { login, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const {register, isAuthenticated} = useAuth()
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async(e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault();
 
-    if (!username.trim() || !password.trim())
-      return toast.error("please fill all fields");
+    if(!username.trim() || !password.trim())
+      return toast.error('please fill all fields')
 
-    await login(username, password);
+    await register(username,password)
+  }
 
-    navigate("/", { replace: true });
-  };
-
-  if (isAuthenticated) return <Navigate to={"/"} replace />;
+  if(isAuthenticated)
+    return (<Navigate to={'/'} replace/>)
 
   return (
     <>
@@ -46,7 +44,7 @@ export default function Login() {
                 type="text"
                 value={username}
                 className="py-1 rounded-sm outline-none text-black"
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e)=>setUsername(e.target.value)}
               />
             </div>
             <div className="flex flex-col space-y-3">
@@ -59,7 +57,7 @@ export default function Login() {
               />
             </div>
             <button className="text-white bg-red-400 rounded-md py-1 px-4 mt-2">
-              Login
+              Signup
             </button>
           </motion.form>
         </div>

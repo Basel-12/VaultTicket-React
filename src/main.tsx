@@ -5,9 +5,10 @@ import App from './App.tsx'
 import axios from 'axios'
 
 axios.defaults.baseURL = 'https://localhost:44384'
+axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+  // <StrictMode>
     <App />
-  </StrictMode>,
+  // </StrictMode>,
 )
