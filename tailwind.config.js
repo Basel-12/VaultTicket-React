@@ -8,7 +8,8 @@ export default {
   theme: {
   	extend: {
   		backgroundImage: {
-  			hero: `url('./assets/people.jpg')`
+  			hero: `url('./assets/people.jpg')`,
+			events : `url('./assets/stats.jpg)`
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

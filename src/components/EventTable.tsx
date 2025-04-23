@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef, GridRowsProp, GridActionsCellItem } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -10,6 +10,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 interface Event {
   id: number;
@@ -20,78 +22,8 @@ interface Event {
 }
 
 const EventTable: React.FC = () => {
-  const [rows, setRows] = useState<Event[]>([
-    {
-      id: 1,
-      title: 'Tech Conference 2025',
-      description: 'The premier tech event of the year!',
-      date: new Date('2025-11-15T00:00:00'),
-      availableSeats: 500,
-    },
-    {
-      id: 2,
-      title: 'Local Art Exhibition',
-      description: 'Showcasing the best local artists.',
-      date: new Date('2025-05-20T00:00:00'),
-      availableSeats: 50,
-    },
-    {
-      id: 3,
-      title: 'Summer Music Festival',
-      description: 'Three days of amazing live music.',
-      date: new Date('2025-07-10T00:00:00'),
-      availableSeats: 2000,
-    },
-    {
-      id: 4,
-      title: 'Introduction to Python Programming',
-      description: 'A beginner-friendly workshop.',
-      date: new Date('2025-06-01T00:00:00'),
-      availableSeats: 30,
-    },
-    {
-      id: 5,
-      title: "Book Club Meeting: 'The Great Gatsby'",
-      description: 'Discussing the classic novel.',
-      date: new Date('2025-05-05T00:00:00'),
-      availableSeats: 15,
-    },
-    {
-      id: 6,
-      title: 'Charity Gala Dinner',
-      description: 'An evening to support a great cause.',
-      date: new Date('2025-09-28T00:00:00'),
-      availableSeats: 120,
-    },
-    {
-      id: 7,
-      title: 'Hiking Adventure in Wadi Degla',
-      description: 'Explore the beautiful landscapes.',
-      date: new Date('2025-10-07T00:00:00'),
-      availableSeats: 40,
-    },
-    {
-      id: 8,
-      title: 'Photography Workshop: Landscape',
-      description: 'Learn the art of capturing stunning landscapes.',
-      date: new Date('2025-08-18T00:00:00'),
-      availableSeats: 25,
-    },
-    {
-      id: 9,
-      title: 'International Food Fair',
-      description: 'Taste flavors from around the world.',
-      date: new Date('2025-12-03T00:00:00'),
-      availableSeats: 1000,
-    },
-    {
-      id: 10,
-      title: 'Yoga and Meditation Retreat',
-      description: 'Rejuvenate your mind and body.',
-      date: new Date('2025-06-25T00:00:00'),
-      availableSeats: 20,
-    },
-  ]);
+  const [rows, setRows] = useState<Event[]>([]);
+
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<Omit<Event, 'id'>>({
     title: '',
@@ -101,6 +33,20 @@ const EventTable: React.FC = () => {
   });
     const [editMode, setEditMode] = useState(false);
     const [editRowId, setEditRowId] = useState<number | null>(null);
+
+
+    useEffect(()=>{
+        const fetchdata = async()=>{
+            try{
+                const res = await axios.get('/api/Events')
+                setRows(res.data)
+
+            }catch(err){
+                toast.error('error fetching data')
+            }
+        }
+        fetchdata()
+    },[])
 
   const columns: GridColDef[] = [
     { field: 'title', headerName: 'Title', width: 250 },
@@ -169,9 +115,16 @@ const EventTable: React.FC = () => {
     }
   };
 
-  const handleAddEvent = () => {
-    setRows([...rows, { id: rows.length + 1, ...formData }]);
-    handleClose();
+  const handleAddEvent = async() => {
+    try{
+            const res = await axios.post('/api/Events',formData)
+            toast.success('Event added Sucsefully')
+            handleClose();
+            window.location.reload();
+        }catch(err){
+        toast.error(err.response.data)
+    }
+    
   };
 
     const handleEditClick = (row: Event) => {
@@ -186,19 +139,30 @@ const EventTable: React.FC = () => {
         setOpen(true);
     };
 
-    const handleUpdateEvent = () => {
+    const handleUpdateEvent = async () => {
         if (editRowId !== null) {
-            const updatedRows = rows.map((row) =>
-                row.id === editRowId ? { ...row, ...formData } : row
-            );
-            setRows(updatedRows);
+          try {
+            await axios.put(`/api/Events/${editRowId}`, formData);
+            toast.success('Event updated successfully');
+            handleClose();
+            window.location.reload(); // optional: better to refetch only
+          } catch (err: any) {
+            toast.error(err.response?.data || 'Error updating event');
+          }
         }
-        handleClose();
-    };
+      };
+      
 
-  const handleDeleteClick = (id: number) => {
-    setRows(rows.filter((row) => row.id !== id));
-  };
+    const handleDeleteClick = async (id: number) => {
+        try {
+          await axios.delete(`/api/Events/${id}`);
+          toast.success('Event deleted successfully');
+          setRows((prev) => prev.filter((row) => row.id !== id));
+        } catch (err: any) {
+          toast.error(err.response?.data || 'Error deleting event');
+        }
+      };
+      
 
   return (
     <div style={{ height: 500, width: '100%' }}>
@@ -246,7 +210,9 @@ const EventTable: React.FC = () => {
             InputLabelProps={{
               shrink: true,
             }}
-            value={formData.date.toISOString().split('T')[0]}
+            value={formData.date instanceof Date && !isNaN(formData.date.getTime())
+                ? formData.date.toISOString().split('T')[0]
+                : ''}
             onChange={(e) => handleDateChange(new Date(e.target.value))}
           />
           <TextField

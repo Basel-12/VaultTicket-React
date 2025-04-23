@@ -17,10 +17,9 @@ export default function Login() {
 
     if (!username.trim() || !password.trim())
       return toast.error("please fill all fields");
+    
+      await login(username, password);
 
-    await login(username, password);
-
-    navigate("/", { replace: true });
   };
 
   if (isAuthenticated) return <Navigate to={"/"} replace />;

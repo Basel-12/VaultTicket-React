@@ -108,6 +108,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setTokens(res.data.token, res.data.refreshToken);
       setisAuthenticated(true);
       decodeandSetUser(res.data.token);
+      navigate("/", { replace: true });
     } catch (err: any) {
       toast.error(`${err.response.data}`);
     }
